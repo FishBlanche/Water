@@ -1,0 +1,17 @@
+<resources>
+    <string name="app_name">水质分布</string>
+    <string name="action_settings">Settings</string>
+
+    <string name="title_activity_select_city_window">SelectCityWindow</string>
+    <string name="dummy_button">Dummy Button</string>
+    <string name="dummy_content">DUMMY\nCONTENT</string>
+    <string name="title_activity_setting">SettingActivity</string>
+    <string name="title_activity_distribution">DistributionActivity</string>
+    <string name="myip">myip</string>
+    <string name="myport">myport</string>
+    <string name="title_activity_func_select">FuncSelectActivity</string>
+    <string name="title_activity_trend">TrendActivity</string>
+
+    <string name="time_next">Next</string>
+    <string name="time_prev">Previous</string>
+</resources>
