@@ -40,6 +40,7 @@ public class DistributionActivity extends AppCompatActivity {
     private DatagramSocket socket;
     private InetAddress remoteIP;
     private MySurfaceView sfv;
+    public static Object lock = new Object();
     public static Queue<String> queue=new LinkedList<String>();
 /*
     private static final String REMOTE_IP = "192.168.0.226:3306";
@@ -139,7 +140,31 @@ public class DistributionActivity extends AppCompatActivity {
             //  conn = Util.openConnection(URL, USER, PASSWORD);
             while(isRun)
             {
+                /*
                 if(!queue.isEmpty())
+                {
+                    String pro = queue.poll();
+                    Log.e("propro","proaaaa"+pro);
+                    byte[] outputData = pro.getBytes();
+                    DatagramPacket outputPacket   = new DatagramPacket(outputData,outputData.length,remoteIP,8888);
+                    try {
+                        socket.send(outputPacket);
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                }*/
+                synchronized(lock){
+                    try {
+                        lock.wait();
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+
+                    if(isRun== false){
+                        break;
+                    }
+                }
+                while(!queue.isEmpty())
                 {
                     String pro = queue.poll();
                     Log.e("propro","proaaaa"+pro);
@@ -154,6 +179,11 @@ public class DistributionActivity extends AppCompatActivity {
             }
         }
     };
+    public static void pollOnce(){
+        synchronized(lock){
+            lock.notify();
+        }
+    }
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
@@ -236,6 +266,7 @@ public class DistributionActivity extends AppCompatActivity {
         btn_factory.setText("水厂:");
         sfv.setVisibility(View.VISIBLE);
         queue.add("country");
+        pollOnce();
     }
 
     @Override
@@ -255,7 +286,7 @@ public class DistributionActivity extends AppCompatActivity {
             handler.sendMessage(msg);*/
             String sendStr="province:"+data.getStringExtra(SelectCityWindow.KEY_PROVINCE_ID);
             queue.add(sendStr);
-
+            pollOnce();
         }
         else if(requestCode ==2 && resultCode == RESULT_OK)
         {
@@ -284,6 +315,7 @@ public class DistributionActivity extends AppCompatActivity {
             handler.sendMessage(msg);*/
             String sendStr="factory:"+data.getStringExtra(SelectCityWindow.KEY_FACTORY_ID);
             queue.add(sendStr);
+            pollOnce();
         }
         /*
         Toast.makeText(

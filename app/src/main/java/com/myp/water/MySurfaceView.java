@@ -141,10 +141,12 @@ public class MySurfaceView extends SurfaceView implements Callback, Runnable {
                 if(scaleballY>originalScaleY+10)
                 {
                     DistributionActivity.queue.add("larger");
+                    DistributionActivity.pollOnce();
                 }
                 else if(scaleballY<originalScaleY-10)
                 {
                     DistributionActivity.queue.add("smaller");
+                    DistributionActivity.pollOnce();
                 }
             } else {
               //  setSmallCircleXY(bigCircleX+bigCircleR, bigCircleY+bigCircleR, bigCircleR, getRad(bigCircleX+bigCircleR, bigCircleY+bigCircleR, pointX, pointY));
@@ -157,18 +159,22 @@ public class MySurfaceView extends SurfaceView implements Callback, Runnable {
                 if(currad>-2.25&&currad<-0.5)
                 {
                     DistributionActivity.queue.add("upper");
+                    DistributionActivity.pollOnce();
                 }
                 else if(currad>0.5&&currad<2.75)
                 {
                     DistributionActivity.queue.add("down");
+                    DistributionActivity.pollOnce();
                 }
                 else if(currad>-0.5&&currad<0.5)
                 {
                     DistributionActivity.queue.add("right");
+                    DistributionActivity.pollOnce();
                 }
                 else
                 {
                     DistributionActivity.queue.add("left");
+                    DistributionActivity.pollOnce();
                 }
 
                 //判断用户点击的位置是否在大圆内

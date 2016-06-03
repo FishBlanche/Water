@@ -41,6 +41,7 @@ public class TrendActivity extends AppCompatActivity {
     private boolean isRun=false;
     private DatagramSocket socket;
     private InetAddress remoteIP;
+    public static Object lock = new Object();
     CollapseCalendarView calendarView;
     public static Queue<String> queue=new LinkedList<String>();
     @Override
@@ -97,7 +98,31 @@ public class TrendActivity extends AppCompatActivity {
             //  conn = Util.openConnection(URL, USER, PASSWORD);
             while(isRun)
             {
+                /*
                 if(!queue.isEmpty())
+                {
+                    String pro = queue.poll();
+                    Log.e("propro","proaaaa"+pro);
+                    byte[] outputData = pro.getBytes();
+                    DatagramPacket outputPacket   = new DatagramPacket(outputData,outputData.length,remoteIP,8888);
+                    try {
+                        socket.send(outputPacket);
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                }*/
+                synchronized(lock){
+                    try {
+                        lock.wait();
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+
+                    if(isRun== false){
+                        break;
+                    }
+                }
+                while(!queue.isEmpty())
                 {
                     String pro = queue.poll();
                     Log.e("propro","proaaaa"+pro);
@@ -112,6 +137,11 @@ public class TrendActivity extends AppCompatActivity {
             }
         }
     };
+    public static void pollOnce(){
+        synchronized(lock){
+            lock.notify();
+        }
+    }
     private void CheckNetStatus()
     {
         ConnectivityManager con=(ConnectivityManager)getSystemService(Activity.CONNECTIVITY_SERVICE);
@@ -133,6 +163,7 @@ public class TrendActivity extends AppCompatActivity {
         Log.e("selectDate", curPara + "++++++" + dateSelect);
         String sendStr="trend:"+curPara+":"+dateSelect;
         queue.add(sendStr);
+        pollOnce();
     }
 
     public void selectElecttricty(View view) {
